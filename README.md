@@ -1,11 +1,11 @@
 # PipeWire Setup for Macs with Cirrus CS8409 (Minimal)
 
-This repository provides a **minimal installer** that sets up **PipeWire** with **WirePlumber** and **pipewire‑pulse**
-on systems using the **Cirrus Logic CS8409** audio device (e.g., iMac/MacBook models).
+This repository provides a **one-click installer** that sets up **PipeWire** with **WirePlumber** and **pipewire‑pulse** on compatible Mac models such as **iMac and MacBook devices** using the **Cirrus Logic CS8409** audio device.
 
-> This repo **does not** build or modify kernel drivers. Install the CS8409 driver first
-> (e.g., via [`frogro/cs8409-dkms-wrapper`](https://github.com/frogro/cs8409-dkms-wrapper)).
-> No ALSA/GRUB blacklists or PipeWire tuning files are written here.
+✅ Verified on **iMac 21.5-inch 4K Late 2019**. Other CS8409-based Macs may also be supported.
+
+> **Important:** This repository does **not** build or install the kernel driver itself.  
+> Install the driver first via: [frogro/cs8409-dkms-wrapper](https://github.com/frogro/cs8409-dkms-wrapper).
 
 ## What it does (and nothing more)
 
