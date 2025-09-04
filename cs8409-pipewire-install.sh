@@ -16,9 +16,9 @@ have_cmd(){ command -v "$1" >/dev/null 2>&1; }
 
 ensure_packages() {
   if have_cmd apt-get; then
-    msg "Installing packages: pipewire, pipewire-pulse, wireplumber, alsa-utils …"
+    msg "Installing packages: pipewire, pipewire-pulse, wireplumber, pulseaudio-utils, alsa-utils …"
     DEBIAN_FRONTEND=noninteractive apt-get update -y || true
-    DEBIAN_FRONTEND=noninteractive apt-get install -y pipewire pipewire-pulse wireplumber alsa-utils || true
+    DEBIAN_FRONTEND=noninteractive apt-get install -y pipewire pipewire-pulse wireplumber pulseaudio-utils alsa-utils || true
   else
     warn "apt-get not found — please install PipeWire + WirePlumber + ALSA utilities manually for your distro."
   fi
