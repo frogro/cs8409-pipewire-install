@@ -10,7 +10,7 @@ This repository provides a **one-click installer** that sets up **PipeWire** wit
 
 ## What it does (and nothing more)
 
-1) Installs only the essentials: `pipewire`, `pipewire-pulse`, `wireplumber`, `alsa-utils` (APT-based systems).  
+1) Installs only the essentials: `pipewire`, `pipewire-pulse`, `wireplumber`, `pulseaudio-utils`, `alsa-utils`  (APT-based systems).  
 2) Enables and starts the **user** services: `pipewire`, `pipewire-pulse`, `wireplumber`.  
 3) Initializes ALSA once via `alsactl init` (to bring up the CS8409 paths).
 
