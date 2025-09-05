@@ -12,7 +12,7 @@ require_root() {
   fi
 }
 
-stop_disable_user_services() {
+disable_user_services() {
   local user="${SUDO_USER:-$(id -un)}"
   msg "Stopping/disabling user services (pipewire, pipewire-pulse, wireplumber) for $user …"
   if [[ -n "$user" && "$user" != "root" ]]; then
@@ -21,10 +21,21 @@ stop_disable_user_services() {
   systemctl --user disable --now pipewire pipewire-pulse wireplumber 2>/dev/null || true
 }
 
+remove_packages() {
+  if command -v apt-get >/dev/null 2>&1; then
+    msg "Removing packages: pipewire, pipewire-pulse, wireplumber, pulseaudio-utils, alsa-utils …"
+    DEBIAN_FRONTEND=noninteractive apt-get remove -y pipewire pipewire-pulse wireplumber pulseaudio-utils alsa-utils || true
+    # Optional: auch `apt-get autoremove -y` laufen lassen
+  else
+    warn "apt-get not found — please remove PipeWire/WirePlumber/ALSA utilities manually for your distro."
+  fi
+}
+
 main(){
   require_root
-  stop_disable_user_services
-  msg "Uninstall complete (services stopped/disabled). Reboot recommended."
+  disable_user_services
+  remove_packages
+  msg "Uninstall complete. A reboot is recommended."
 }
 
 main "$@"
