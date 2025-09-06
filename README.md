@@ -31,7 +31,7 @@ reboot
 ```bash
 wget https://raw.githubusercontent.com/frogro/cs8409-pipewire-install/main/cs8409-pipewire-install.sh
 wget https://raw.githubusercontent.com/frogro/cs8409-pipewire-install/main/cs8409-pipewire-uninstall.sh
-chmod +x cs8409-pipewire-*.sh
+sudo chmod +x cs8409-pipewire-*.sh
 sudo ./cs8409-pipewire-install.sh
 reboot
 ```
