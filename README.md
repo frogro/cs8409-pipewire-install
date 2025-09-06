@@ -53,10 +53,11 @@ pactl info | grep -E 'Server Name|Default.*Sample'
 
 ## Uninstall (minimal)
 Uninstall the PipeWire + WirePlumber profile: 
-- disables/stops/unmasks PipeWire/WirePlumber user services, cleans up mask symlinks, and re-enables PulseAudio user services (socket-activated).
-- Optionally purges PipeWire packages with `--purge`.
+- disables/stops/unmasks PipeWire/WirePlumber user services,
+- cleans up mask symlinks,
+- re-enables PulseAudio user services (socket-activated).
 
 ```bash
-sudo ./cs8409-pipewire-uninstall.sh #(
+sudo ./cs8409-pipewire-uninstall.sh 
 reboot
 ```
