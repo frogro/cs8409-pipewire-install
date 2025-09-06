@@ -1,4 +1,4 @@
-# Linux PipeWire with WirePlumber Setup for Macs with Cirrus CS8409 (Minimal)
+# Linux PipeWire with WirePlumber Setup for Macs with Cirrus CS8409
 
 This repository provides a **one-click installer** that sets up **PipeWire with WirePlumber** (PipeWire + pipewire-pulse + WirePlumber) on compatible Mac models such as **iMac and MacBook devices** using the **Cirrus Logic CS8409** audio device.
 
