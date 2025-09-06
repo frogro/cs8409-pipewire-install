@@ -53,7 +53,7 @@ wpctl status | sed -n '/Audio/p'
 ```
 
 ## Uninstall
-Uninstall the PipeWire + WirePlumber profile: 
+Script uninstalls the PipeWire + WirePlumber profile: 
 - disables/stops/unmasks PipeWire/WirePlumber user services,
 - cleans up mask symlinks,
 - re-enables PulseAudio user services (socket-activated).
