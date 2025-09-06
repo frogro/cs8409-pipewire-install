@@ -9,9 +9,21 @@ This repository provides a **one-click installer** that sets up **PipeWire with 
 
 ## What it does (and nothing more)
 
-1) Installs only the essentials: `pipewire`, `pipewire-pulse`, `wireplumber`, `pulseaudio-utils`, `alsa-utils`  (APT-based systems).  
-2) Enables and starts the **user** services: `pipewire`, `pipewire-pulse`, `wireplumber`.  
-3) Initializes ALSA once via `alsactl init` (to bring up the CS8409 paths).
+- Removes any APT pinning against PipeWire
+- Installs **PipeWire stack** (`pipewire`, `pipewire-pulse`, `pipewire-alsa`, `wireplumber`) + `pulseaudio-utils`, `alsa-utils`
+- Runs `alsactl init` once
+- In the user scope:
+  - Enables `pipewire.socket`, `pipewire-pulse.socket`, `wireplumber.service`
+  - Disables `pulseaudio.service`, `pulseaudio.socket`
+  - Removes mask symlinks from `~/.config/systemd/user/`
+- Starts user manager (`user@UID.service`) headless for systemctl access
+- Immediately starts and verifies services (if user bus reachable)
+- Uses `pactl` (PulseAudio API on PipeWire) and `wpctl` (native PipeWire) for verification
+- Ends with reboot/logout prompt
+
+**Result:**  
+- Active profile: **ALSA + PipeWire 0.3.65 + WirePlumber + pipewire-pulse**  
+- `pactl info` → `Server Name: PulseAudio (on PipeWire 0.3.65)`
 
 No custom config files are created.
 
