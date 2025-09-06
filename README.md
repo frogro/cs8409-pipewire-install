@@ -47,8 +47,9 @@ reboot
 
 ## Verify after login
 ```bash
-systemctl --user --no-pager status pipewire pipewire-pulse wireplumber
-pactl info | grep -E 'Server Name|Default.*Sample'
+systemctl --user is-active pipewire.socket pipewire-pulse.socket wireplumber.service
+pactl info | egrep 'Server Name'
+wpctl status | sed -n '/Audio/p'
 ```
 
 ## Uninstall (minimal)
@@ -61,3 +62,8 @@ Uninstall the PipeWire + WirePlumber profile:
 sudo ./cs8409-pipewire-uninstall.sh 
 reboot
 ```
+## Notes
+
+- Please review before use on production systems.
+- Experimental — feedback and pull requests are welcome.
+
