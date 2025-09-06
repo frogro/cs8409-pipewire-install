@@ -1,76 +1,49 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-msg()  { printf "\033[1;32m[+] %s\033[0m\n" "$*"; }
-warn() { printf "\033[1;33m[!] %s\033[0m\n" "$*"; }
-err()  { printf "\033[1;31m[✗] %s\033[0m\n" "$*"; }
+# cs8409-config-uninstall.sh — revert config to near-stock (no GRUB, no service flips)
+# - Entfernt NUR unsere Dateien:
+#     /etc/asound.conf
+#     /etc/modprobe.d/cs8409.conf
+#     /etc/modprobe.d/blacklist-generic.conf
+#     /etc/modprobe.d/blacklist-sof.conf
+#     /etc/apt/preferences.d/no-pipewire-audio.pref
+# - Keine Änderungen an GRUB
+# - Keine Änderungen an User-Services (Pulse/PipeWire)
+# - Lädt HDA-Treiber neu, speichert ALSA-State
+# - Fragt am Ende nach Reboot
 
-require_root() {
-  if [[ $EUID -ne 0 ]]; then
-    err "Please run as root (sudo)."
-    exit 1
-  fi
-}
+msg(){ printf "\033[1;32m[+] %s\033[0m\n" "$*"; }
+warn(){ printf "\033[1;33m[!] %s\033[0m\n" "$*"; }
+err(){ printf "\033[1;31m[✗] %s\033[0m\n" "$*"; }
 
-have_cmd(){ command -v "$1" >/dev/null 2>&1; }
+[[ $EUID -eq 0 ]] || { err "Please run as root (sudo)."; exit 1; }
 
-SWITCH_TO_PULSEAUDIO=0
-for a in "$@"; do
-  case "$a" in
-    --switch-to-pulseaudio) SWITCH_TO_PULSEAUDIO=1 ;;
-    -h|--help)
-      cat <<'EOF'
-Usage: sudo ./uninstall.sh [--switch-to-pulseaudio]
-  --switch-to-pulseaudio   Stoppt PipeWire & aktiviert PulseAudio (falls installiert).
-EOF
-      exit 0
-      ;;
-    *)
-      err "Unknown argument: $a"
-      exit 2
-      ;;
-  esac
-done
+msg "Remove our ALSA system defaults (/etc/asound.conf)"
+rm -f /etc/asound.conf
 
-disable_pipewire_for_user() {
-  local user="$1"
-  su - "$user" -c 'systemctl --user disable --now pipewire pipewire-pulse wireplumber'  >/dev/null 2>&1 || true
-  su - "$user" -c 'systemctl --user mask pipewire-pulse.socket pipewire-pulse.service' >/dev/null 2>&1 || true
-  su - "$user" -c 'systemctl --user mask pipewire.service wireplumber.service'        >/dev/null 2>&1 || true
-}
+msg "Remove cs8409 modprobe options"
+/bin/rm -f /etc/modprobe.d/cs8409.conf
 
-enable_pulseaudio_for_user() {
-  local user="$1"
-  if have_cmd pulseaudio || [[ -f "/usr/lib/systemd/user/pulseaudio.service" || -f "/lib/systemd/user/pulseaudio.socket" || -f "/lib/systemd/user/pulseaudio.service" || -f "/lib/systemd/user/pulseaudio.socket" ]]; then
-    su - "$user" -c 'systemctl --user unmask pulseaudio.service pulseaudio.socket' >/dev/null 2>&1 || true
-    su - "$user" -c 'systemctl --user enable --now pulseaudio.socket pulseaudio.service' >/dev/null 2>&1 || true
-    su - "$user" -c 'pulseaudio --check 2>/dev/null || pulseaudio --start' >/dev/null 2>&1 || true
-  else
-    warn "PulseAudio scheint nicht installiert zu sein – überspringe Umschaltung."
-  fi
-}
+msg "Remove our blacklist files (generic & SOF)"
+/bin/rm -f /etc/modprobe.d/blacklist-generic.conf \
+         /etc/modprobe.d/blacklist-sof.conf
 
-main() {
-  require_root
+PIN=/etc/apt/preferences.d/no-pipewire-audio.pref
+if [[ -f "$PIN" ]]; then
+  msg "Remove APT pin (no-pipewire-audio.pref)"
+  rm -f "$PIN"
+fi
 
-  local user="${SUDO_USER:-$(id -un)}"
-  if [[ -z "$user" || "$user" == "root" ]]; then
-    user="$(logname 2>/dev/null || true)"
-    [[ -z "$user" ]] && user="$(id -un)"
-  fi
-  msg "Deaktivieren/Stoppen von PipeWire für User: $user"
+msg "Reload snd_hda_intel and store ALSA state"
+modprobe -r snd_hda_intel 2>/dev/null || true
+modprobe snd_hda_intel  || true
+alsactl store          || true
 
-  disable_pipewire_for_user "$user"
-  systemctl --user disable --now pipewire pipewire-pulse wireplumber >/dev/null 2>&1 || true
-  systemctl --user mask pipewire-pulse.socket pipewire-pulse.service pipewire.service wireplumber.service >/dev/null 2>&1 || true
+msg "Cleanup done. A reboot is recommended."
 
-  if (( SWITCH_TO_PULSEAUDIO )); then
-    msg "Umschalten auf PulseAudio (falls vorhanden) …"
-    enable_pulseaudio_for_user "$user"
-  fi
-
-  msg "Fertig. Bitte ab- und wieder anmelden (oder reboot), damit die Audio-Session sauber neu startet."
-  warn "Hinweis: Falls 'Failed to connect to bus' erschien, lag kein User-D-Bus vor. Das ist harmlos."
-}
-
-main "$@"
+read -rp "Do you want to reboot now? (y/n) " ans || true
+case "${ans:-n}" in
+  [Yy]* ) reboot ;;
+  * ) echo "Reboot skipped. Please reboot later to apply kernel/module changes."; ;;
+esac
