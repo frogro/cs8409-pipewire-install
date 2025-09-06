@@ -25,8 +25,6 @@ This repository provides a **one-click installer** that sets up **PipeWire with 
 - Active profile: **ALSA + PipeWire 0.3.65 + WirePlumber + pipewire-pulse**  
 - `pactl info` → `Server Name: PulseAudio (on PipeWire 0.3.65)`
 
-No custom config files are created.
-
 ## Usage
 
 ### Option A: Clone
