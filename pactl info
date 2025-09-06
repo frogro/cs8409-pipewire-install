@@ -1,0 +1,15 @@
+erver-Zeichenkette: /run/user/1000/pulse/native
+Bibliotheks-Protokollversion: 35
+Server-Protokollversion: 35
+ist lokal: ja
+Client-Index: 85
+Tile-Größe: 65472
+Name des Benutzers: user
+Rechnername: debian
+Name des Servers: PulseAudio (on PipeWire 0.3.65)
+Version des Servers: 15.0.0
+Standard-Abtastwert-Angabe: float32le 2ch 48000Hz
+Standard-Kanal-Zuordnung: front-left,front-right
+Standard-Ziel: alsa_output.pci-0000_00_1f.3.analog-stereo
+Standard-Quelle: alsa_input.pci-0000_00_1f.3.analog-stereo
+Cookie: 5878:8860
