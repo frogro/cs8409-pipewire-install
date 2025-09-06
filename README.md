@@ -52,7 +52,7 @@ pactl info | egrep 'Server Name'
 wpctl status | sed -n '/Audio/p'
 ```
 
-## Uninstall (minimal)
+## Uninstall
 Uninstall the PipeWire + WirePlumber profile: 
 - disables/stops/unmasks PipeWire/WirePlumber user services,
 - cleans up mask symlinks,
