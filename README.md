@@ -1,4 +1,6 @@
 # Linux PipeWire with PulseAudio compatibility + WirePlumber Setup for Macs with Cirrus CS8409
+![Tested on iMac 2019](https://img.shields.io/badge/Tested%20on-iMac%202019-2b90ff?logo=apple&logoColor=white&style=flat-square)
+[![ShellCheck](https://img.shields.io/github/actions/workflow/status/frogro/cs8409-alsa-install/main.yml?branch=main&label=ShellCheck<br/>&logo=gnu-bash&logoColor=white&style=flat-square)](https://github.com/frogro/cs8409-alsa-install/actions/workflows/main.yml)
 
 This repository provides a **one-click installer** that sets up **PipeWire with PulseAudio compatibility + WirePlumber** on compatible Mac models such as **iMac and MacBook devices** using the **Cirrus Logic CS8409** audio device.
 
