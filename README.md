@@ -50,8 +50,11 @@ reboot
 ## Verify after login
 ```bash
 systemctl --user is-active pipewire.socket pipewire-pulse.socket wireplumber.service
+# expected: all "active"
 pactl info | egrep 'Server Name'
+# expected: "Server Name: PulseAudio (on PipeWire …)"
 wpctl status | sed -n '/Audio//Video/p'
+# expected: your internal + HDMI devices, and default sink set (e.g. "Internes Audio Analog Stereo")
 ```
 
 ## Uninstall
