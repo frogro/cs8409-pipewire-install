@@ -51,7 +51,7 @@ reboot
 ```bash
 systemctl --user is-active pipewire.socket pipewire-pulse.socket wireplumber.service
 pactl info | egrep 'Server Name'
-wpctl status | sed -n '/Audio/p'
+wpctl status | sed -n '/Audio//Video/p'
 ```
 
 ## Uninstall
