@@ -7,7 +7,7 @@ This repository provides a **one-click installer** that sets up **PipeWire with 
 ✅ Verified on **iMac 21.5-inch 4K Late 2019**. Other CS8409-based Macs may also be supported.<br/>✅ Verified on Debian 12 (Bookworm) and Debian 13 (Trixie). Other Linux distributions or versions — especially Debian-based ones such as Ubuntu or Linux Mint — may also work, but have not been tested.
 
 > **Important:** This repository does **not** build or install the kernel driver itself.  
-> Install the driver first via: [frogro/cs8409-dkms-wrapper](https://github.com/frogro/cs8409-dkms-wrapper).
+> Install the driver first via: [frogro/cs8409-dkms-wrapper](https://github.com/frogro/imac-cs8409-dkms-wrapper).
 
 ## What it does (and nothing more)
 
@@ -31,7 +31,7 @@ This repository provides a **one-click installer** that sets up **PipeWire with 
 
 ### Option A: Clone
 ```bash
-git clone https://github.com/frogro/cs8409-pipewire-install.git
+git clone https://github.com/frogro/imac-cs8409-pipewire-install.git
 cd cs8409-pipewire-install
 chmod +x cs8409-pipewire-install.sh cs8409-pipewire-uninstall.sh
 sudo ./cs8409-pipewire-install.sh
@@ -40,8 +40,8 @@ reboot
 
 ### Option B: Download only
 ```bash
-wget https://raw.githubusercontent.com/frogro/cs8409-pipewire-install/main/cs8409-pipewire-install.sh
-wget https://raw.githubusercontent.com/frogro/cs8409-pipewire-install/main/cs8409-pipewire-uninstall.sh
+wget https://raw.githubusercontent.com/frogro/imac-cs8409-pipewire-install/main/cs8409-pipewire-install.sh
+wget https://raw.githubusercontent.com/frogro/imac-cs8409-pipewire-install/main/cs8409-pipewire-uninstall.sh
 sudo chmod +x cs8409-pipewire-*.sh
 sudo ./cs8409-pipewire-install.sh
 reboot
