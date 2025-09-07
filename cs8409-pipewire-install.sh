@@ -2,12 +2,12 @@
 set -euo pipefail
 
 # cs8409-pipewire-install.sh — PipeWire + WirePlumber (rev3-guards)
-# - Entfernt altes APT-Pinning gegen PipeWire (falls vorhanden)
-# - Installiert pipewire, pipewire-pulse, pipewire-alsa, wireplumber (+ utils)
-# - Startet headless user@UID.service, räumt User-Masken (/dev/null Symlinks) auf
-# - Enable: pipewire.socket, pipewire-pulse.socket, wireplumber.service
-# - Disable: pulseaudio.service/.socket
-# - GUARD: Wenn User-Bus erreichbar → sofort starten + prüfen; sonst Hinweis "reboot/login"
+# - Removes old APT pin blocking PipeWire (if present)
+# - Installs pipewire, pipewire-pulse, pipewire-alsa, wireplumber (+ utils)
+# - Starts headless user@UID.service, cleans up user mask symlinks (/dev/null links)
+# - Enables: pipewire.socket, pipewire-pulse.socket, wireplumber.service
+# - Disables: pulseaudio.service/.socket
+# - GUARD: If a user bus is reachable → start immediately & verify; otherwise show hint "reboot/login"
 
 msg(){ printf "\033[1;32m[+] %s\033[0m\n" "$*"; }
 warn(){ printf "\033[1;33m[!] %s\033[0m\n" "$*"; }
@@ -69,7 +69,7 @@ pactl_user(){
 }
 
 ensure_packages(){
-  # evtl. APT-Pinning gegen PipeWire aufheben
+  # Remove any APT pin blocking PipeWire
   if [[ -f /etc/apt/preferences.d/no-pipewire-audio.pref ]]; then
     warn "Found APT pin blocking PipeWire → removing"
     rm -f /etc/apt/preferences.d/no-pipewire-audio.pref
@@ -106,7 +106,7 @@ start_and_verify_if_possible(){
   local user="$1"
   if user_bus_ok "$user"; then
     msg "User bus reachable → starting PipeWire stack now"
-    # kleine Aufräumaktion: evtl. Blockierer lösen
+    # Small cleanup: kill potential blockers
     fuser -k /dev/snd/* 2>/dev/null || true
 
     # Start/Restart services
@@ -117,12 +117,12 @@ start_and_verify_if_possible(){
 
     echo "--- CHECK pactl ---"
     if pactl_user "$user" pactl info >/dev/null 2>&1; then
-      pactl_user "$user" pactl info | egrep 'Name des Servers|Version des Servers|Standard-Ziel' || true
+      pactl_user "$user" pactl info | egrep 'Server Name|Server Version|Default Sink' || true
     else
       warn "pipewire-pulse not ready yet → restarting sockets"
       userctl "$user" restart pipewire-pulse.socket || true
       sleep 1
-      pactl_user "$user" pactl info | egrep 'Name des Servers|Standard-Ziel' || true
+      pactl_user "$user" pactl info | egrep 'Server Name|Default Sink' || true
     fi
 
     echo "--- CHECK wpctl ---"
@@ -137,7 +137,7 @@ start_and_verify_if_possible(){
     echo "  systemctl --user daemon-reload"
     echo "  systemctl --user enable --now pipewire.socket pipewire-pulse.socket wireplumber.service"
     echo "  systemctl --user disable --now pulseaudio.service pulseaudio.socket || true"
-    echo "  pactl info | egrep 'Name des Servers|Standard-Ziel'"
+    echo "  pactl info | egrep 'Server Name|Default Sink'"
     echo "  wpctl status | sed -n '/Audio/,/Video/p'"
   fi
 }
